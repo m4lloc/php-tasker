@@ -7,8 +7,8 @@
     {
       "name": "Sander van Rossum",
       "email": "hello@sandervanrossum.nl"
-    }  
-  ],  
+    }
+  ],
   "require": {
     "predis/predis": "^1.1"
   },
@@ -19,5 +19,8 @@
     "psr-4": {
       "": "src"
     }
-  }
+  },
+  "bin": [
+    "bin/tasker"
+  ]
 }
