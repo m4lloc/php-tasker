@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" verbose="true" bootstrap="tests/bootstrap.php">
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">.</directory>
+    </whitelist>
+  </filter>
+  <php>
+    <ini name="display_errors" value="On" />
+    <ini name="error_reporting" value="32759" />
+    <includePath>./tests/support/tasks</includePath>
+    <includePath>./tests/support/helpers</includePath>
+  </php>
+  <testsuites>
+    <testsuite name="Application Test Suite">
+      <directory>./tests/src</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
