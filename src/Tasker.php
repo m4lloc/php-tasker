@@ -43,12 +43,24 @@
       return self::$options;
     }
 
+    public function addHandler(int $handler, $callback) : void {
+      self::$handlers[$handler][] = $callback;
+    }
+
+    private static function runHandler(int $handler) : void {
+      if(isset(self::$handlers[$handler])) {
+        foreach(self::$handlers[$handler] as $callback) {
+          $callback();
+        }
+      }
+    }
+
     private function connect() : \Predis\Client {
       $this->log('Connecting to Redis...');
       try {
         self::$redis = new \Predis\Client(self::$options);
       } catch (RedisException $e) {
-        $this->log('Connection FAILED, see error log for more information');
+        $this->log('Connection to Redis FAILED, see error log for more information');
         throw new \TaskerConnectionException($e->getMessage());
       }
       $this->log('Connected');
@@ -193,12 +205,12 @@
       $this->log('Found task '. $t->key());
       self::runHandler(self::HANDLER_MYSQL_RECONNECT);
       try {
-        $t->perform();
+        $t->perform($t->arguments);
       } catch(\TaskerFailedException $e) {
-        $t->failed();
+        $t->failed($e);
         $this->exit(1);
       } catch(\TaskerRetryException | Exception $e) {
-        $t->retry();
+        $t->retry($e);
         $this->exit();
       }
       $t->complete();
