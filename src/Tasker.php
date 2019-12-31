@@ -9,10 +9,13 @@
 
   class Tasker {
 
+    public const HANDLER_MYSQL_RECONNECT = 0;
+
     private static $options   = null;     // Tasker config
     private static $redis     = false;    // Redis connection
     private static $scheduler = 0;        // PID of scheduler
     private static $workers   = [];       // Information about workers
+    private static $handlers  = [];       // List for custom handlers
 
     private $quiet            = false;    // Should we stop starting new jobs
     private $pid              = null;     // Register PID of current process
@@ -188,6 +191,7 @@
     private function process(string $queue) {
       $t = $this->get($queue);
       $this->log('Found task '. $t->key());
+      self::runHandler(self::HANDLER_MYSQL_RECONNECT);
       try {
         $t->perform();
       } catch(\TaskerFailedException $e) {
